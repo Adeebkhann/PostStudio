@@ -8,6 +8,8 @@ import logging
 from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from pydantic import BaseModel
 import httpx
 
@@ -245,6 +247,15 @@ def test_provider_key(req: KeyTestRequest):
             message=f"Connection error: {str(e)}",
             availableModels=[]
         )
+
+
+# ---------------------------------------------------------------------------
+# Mount Built React Frontend (For Single-Server & Cloud Deployments)
+# ---------------------------------------------------------------------------
+dist_dir = Path(__file__).resolve().parent.parent / "dist"
+if dist_dir.exists():
+    logger.info(f"Mounting static frontend build from {dist_dir}")
+    app.mount("/", StaticFiles(directory=str(dist_dir), html=True), name="static")
 
 
 if __name__ == "__main__":

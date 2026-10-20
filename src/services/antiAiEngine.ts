@@ -1,6 +1,7 @@
 import { ToneMode } from '../types/studio';
 import { geminiService } from './geminiService';
 import { aiProviderService } from './aiProviderService';
+import { API_BASE_URL } from './apiConfig';
 
 export const BANNED_AI_WORDS = [
   'delve', 'testament', 'tapestry', 'game-changer', 'revolutionize',
@@ -69,7 +70,7 @@ export async function generateHumanPost(options: PostGenerationOptions): Promise
   try {
     const pyController = new AbortController();
     const timeoutId = setTimeout(() => pyController.abort(), 6000);
-    const pyRes = await fetch('http://127.0.0.1:8000/api/generate/deep', {
+    const pyRes = await fetch(`${API_BASE_URL}/api/generate/deep`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

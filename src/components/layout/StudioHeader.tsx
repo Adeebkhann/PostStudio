@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { RotateCw, Sparkles, Key, UserCheck, Cpu, Zap, Brain, Terminal } from 'lucide-react';
 import { UserAuthSession, AIProvider } from '../../types/studio';
 import { aiProviderService, PROVIDERS } from '../../services/aiProviderService';
+import { API_BASE_URL } from '../../services/apiConfig';
 
 interface StudioHeaderProps {
   onOpenSettings?: () => void;
@@ -19,7 +20,7 @@ export const StudioHeader: React.FC<StudioHeaderProps> = ({
   const userName = currentSession?.userName || localStorage.getItem('poststudio_brand_name') || 'Creator';
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/health')
+    fetch(`${API_BASE_URL}/api/health`)
       .then(res => res.json())
       .then(data => {
         if (data.status === 'online') setPythonActive(true);

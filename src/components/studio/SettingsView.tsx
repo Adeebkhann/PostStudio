@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { geminiService } from '../../services/geminiService';
 import { aiProviderService, PROVIDERS } from '../../services/aiProviderService';
+import { API_BASE_URL } from '../../services/apiConfig';
 import { UserIdentity, AIProvider } from '../../types/studio';
 
 interface SettingsViewProps {
@@ -44,7 +45,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     setApiKey(aiProviderService.getKeyForProvider(prov));
 
     // Check Python FastAPI backend health
-    fetch('http://127.0.0.1:8000/api/health')
+    fetch(`${API_BASE_URL}/api/health`)
       .then(r => r.json())
       .then(data => setPythonStatus({ online: true, details: data }))
       .catch(() => setPythonStatus({ online: false }));

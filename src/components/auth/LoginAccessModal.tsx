@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { AIProvider, UserAuthSession } from '../../types/studio';
 import { aiProviderService, PROVIDERS } from '../../services/aiProviderService';
+import { API_BASE_URL } from '../../services/apiConfig';
 
 interface LoginAccessModalProps {
   isOpen: boolean;
@@ -54,7 +55,7 @@ export const LoginAccessModal: React.FC<LoginAccessModalProps> = ({
       setTestMessage('');
 
       // Check Python backend
-      fetch('http://127.0.0.1:8000/api/health')
+      fetch(`${API_BASE_URL}/api/health`)
         .then(r => r.json())
         .then(d => { if (d.status === 'online') setPythonOnline(true); })
         .catch(() => setPythonOnline(false));

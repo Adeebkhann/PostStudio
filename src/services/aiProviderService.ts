@@ -1,5 +1,6 @@
 import { AIProvider, UserAuthSession } from '../types/studio';
 import { geminiService } from './geminiService';
+import { API_BASE_URL } from './apiConfig';
 
 const ACTIVE_PROVIDER_STORAGE = 'poststudio_active_provider';
 const OPENAI_API_KEY_STORAGE = 'poststudio_openai_api_key';
@@ -188,7 +189,7 @@ export const aiProviderService = {
 
     if (provider === 'python-local') {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/health');
+        const res = await fetch(`${API_BASE_URL}/api/health`);
         if (res.ok) {
           const data = await res.json();
           return {

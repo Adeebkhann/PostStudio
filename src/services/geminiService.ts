@@ -1,4 +1,5 @@
 // Gemini API and AI Services Integration
+import { API_BASE_URL } from './apiConfig';
 
 export interface GeminiConfig {
   apiKey: string;
@@ -43,7 +44,7 @@ export const geminiService = {
 
     // 1. Try testing via Python FastAPI backend
     try {
-      const pyRes = await fetch('http://127.0.0.1:8000/api/test-key', {
+      const pyRes = await fetch(`${API_BASE_URL}/api/test-key`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ apiKey: cleanKey })

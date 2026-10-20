@@ -1,4 +1,5 @@
 import { TechRadarArticle, TechRadarCategory } from '../types/studio';
+import { API_BASE_URL } from './apiConfig';
 
 let liveArticlesCache: TechRadarArticle[] = [];
 let lastFetchTimestamp = 0;
@@ -181,7 +182,7 @@ export async function fetchLiveRadarArticles(force: boolean = false): Promise<Te
 
   // 1. Try Python Radar Engine first
   try {
-    const pyRes = await fetch(`http://127.0.0.1:8000/api/radar/feed?page=${pageNum}`);
+    const pyRes = await fetch(`${API_BASE_URL}/api/radar/feed?page=${pageNum}`);
     if (pyRes.ok) {
       const pyData = await pyRes.json();
       if (Array.isArray(pyData.articles) && pyData.articles.length > 0) {
