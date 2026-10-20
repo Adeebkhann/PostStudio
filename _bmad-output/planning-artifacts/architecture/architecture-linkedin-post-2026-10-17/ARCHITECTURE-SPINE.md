@@ -3,189 +3,104 @@ name: 'poststudio-architecture-spine'
 type: architecture-spine
 purpose: build-substrate
 altitude: feature
-paradigm: 'layered-client-reactive'
-scope: 'Everyday LinkedIn Post Maker with inline unfolding studio, anti-AI post generator, dynamic trending tags engine, and crazy surrealist visual generator'
+paradigm: 'polyglot-hybrid-client-reactive'
+scope: 'Everyday LinkedIn Post Maker with Python 3.13 Multi-Agent Core, Multi-Provider AI Gateway, Live Tech Disruption Radar, and Visual Workbench'
 status: final
 created: '2026-10-17'
-updated: '2026-10-17'
-binds: ['FR-POV-Sidebar', 'FR-Thought-Capture', 'FR-Inline-Accordion', 'FR-Anti-AI-Engine', 'FR-Dynamic-Trends', 'FR-Crazy-Visuals', 'FR-Clipboard-Action']
+updated: '2026-10-20'
+binds: ['FR-POV-Sidebar', 'FR-Thought-Capture', 'FR-Inline-Accordion', 'FR-Anti-AI-Engine', 'FR-Dynamic-Trends', 'FR-Crazy-Visuals', 'FR-Multi-Provider', 'FR-Python-Agent-Core', 'FR-Tech-Radar', 'FR-Visual-Workbench']
 sources: ['_bmad-output/planning-artifacts/prd.md']
 companions: []
 ---
 
-# Architecture Spine — PostStudio (LinkedIn Post Maker)
+# Architecture Spine — PostStudio v2.2
 
 ## Design Paradigm
 
-PostStudio adopts the **Layered Client-Reactive (LCR)** paradigm. The system is split into four decoupled layers with unidirectional data flow:
-1. **Presentation Layer (Views & Atoms):** Pure presentation components adhering to the screenshot's sage-minimalist geometry (`#1B3B2B`, `#F4F6F0`).
-2. **Studio State & Orchestrator:** Centralized reactive state store managing user identity, thought draft, tone override, generation progress, and draft history.
-3. **Domain Engine Services:** Stateless engines for Anti-AI text synthesis, two-tier trending tag calculation, and surrealist visual generation.
-4. **Platform Adapters:** Pure boundary adapters interfacing with `localStorage`, Web Speech API (voice dictation), and `navigator.clipboard`.
+PostStudio employs the **Polyglot Hybrid Client-Reactive (PHCR)** paradigm. The system pairs a high-performance **Python 3.13 Multi-Agent Core** (FastAPI) with a responsive **React 18 / TypeScript Presentation Layer** (Vite), linked via resilient local REST endpoints and browser-native failovers:
+
+1. **Presentation Layer (React 18 + TailwindCSS 4):**
+   - Renders the sage-minimalist geometry (`#1F322C`, `#FAF8F5`).
+   - Unfolding inline studio accordion, live provider switch badges, and distraction-free visual workbench.
+2. **Multi-Provider AI Gateway Layer (`aiProviderService.ts`):**
+   - Manages unified credential routing across **Google Gemini**, **OpenAI GPT-4o**, **Anthropic Claude**, **Groq Cloud**, and **Python Local**.
+   - Auto-discovers supported models via official discovery endpoints (`/v1beta/models`, `/v1/models`).
+3. **Python Multi-Agent Core Engine (`backend/`):**
+   - `backend/post_engine.py`: Multi-agent semantic NLP parser, burstiness cadence auditor, and anti-AI phrase sanitizer.
+   - `backend/radar_engine.py`: Live async HTTPX scraper ingesting developer dispatches and synthesizing career impact and leverage analysis.
+   - `backend/app.py`: FastAPI application serving `/api/health`, `/api/generate/deep`, `/api/radar/feed`, and `/api/test-key`.
+4. **Client-Side Synthesis & Fallback Layer (`antiAiEngine.ts`):**
+   - Ensures zero user-facing error dialogs or broken states by seamlessly falling back to local semantic synthesis if external APIs or network calls encounter timeouts.
+5. **Platform Adapters:**
+   - Pure boundary adapters interfacing with `localStorage`, Web Speech API, and `navigator.clipboard`.
 
 ```mermaid
 flowchart TD
-    subgraph UI ["Presentation Layer (React / Tailwind)"]
+    subgraph Client ["Client Presentation & State (React 18 + Vite)"]
+        Header["Studio Header\n(Live Provider Badge + Key Switch)"]
         Sidebar["Left POV Sidebar\n(Profession & Role)"]
         CardInput["Center Card 01\n(Thought + Tone Selector)"]
         CardOutput["Center Card 02 (Accordion)\n(Copy + Tags + Crazy Visual)"]
-        RightColumn["Right Column\n(Reminders & Status)"]
+        RadarView["Tech & Job Radar View\n(Disruption Alerts + Career Impact)"]
+        WorkbenchView["Visual Workbench\n(Expanded Whiteboard Canvas)"]
+        LoginModal["Access Gateway Modal\n(Multi-Provider Login & Live Test)"]
     end
 
-    subgraph State ["Studio Controller & State"]
-        Store["Studio State Store\n(Identity, Thought, Draft, Generation Status)"]
+    subgraph Gateway ["Multi-Provider AI Gateway Layer"]
+        ProviderRouter["Provider Dispatcher\n(aiProviderService)"]
+        LocalStore["Browser Encrypted LocalStorage\n(poststudio_auth_session)"]
     end
 
-    subgraph Engines ["Domain Engine Services"]
-        TextEngine["Anti-AI Copy Engine\n(Gemini API + Perplexity Guard)"]
-        TrendEngine["Dynamic Trending Tags Engine\n(Industry Radar + Semantic Matcher)"]
-        ImageEngine["Crazy Visual Engine\n(Surrealist Metaphor Synthesizer)"]
+    subgraph PythonBackend ["Python 3.13 Multi-Agent Backend (FastAPI :8000)"]
+        FastAPI["FastAPI Server\n(backend/app.py)"]
+        NLPPostEngine["Multi-Agent Post Engine\n(backend/post_engine.py)"]
+        RadarScraper["Live Radar HTTPX Scraper\n(backend/radar_engine.py)"]
     end
 
-    subgraph Adapters ["Platform Adapters"]
-        StorageAdapter["LocalStorage Adapter\n(Drafts & Preferences)"]
-        ClipboardAdapter["Clipboard Formatter Adapter"]
-        SpeechAdapter["Web Speech Dictation Adapter"]
+    subgraph ExternalAPIs ["External LLM Providers"]
+        Gemini["Google Gemini v1beta\n(Dynamic Model Discovery)"]
+        OpenAI["OpenAI GPT-4o / Mini"]
+        Groq["Groq Cloud Llama 3.3 70B"]
+        Anthropic["Anthropic Claude 3.5 Sonnet"]
     end
 
-    Sidebar -->|update identity| Store
-    CardInput -->|trigger generation| Store
-    Store -->|orchestrate| Engines
-    Engines -->|stream result| Store
-    Store -->|render state| CardOutput
-    Store -->|persist| StorageAdapter
-    CardOutput -->|1-click copy| ClipboardAdapter
-    CardInput -->|dictate| SpeechAdapter
+    Client -->|select provider / test key| ProviderRouter
+    ProviderRouter -->|persist keys| LocalStore
+    CardInput -->|generate request| ProviderRouter
+    ProviderRouter -->|POST /api/generate/deep| FastAPI
+    FastAPI --> NLPPostEngine
+    NLPPostEngine -->|if external key| ExternalAPIs
+    FastAPI -->|GET /api/radar/feed| RadarScraper
+    RadarScraper -->|stream live intelligence| RadarView
+    CardOutput -->|unfold copy + tags| Client
 ```
 
 ---
 
-## Invariants & Rules
+## Architectural Invariants & Rules
 
-### AD-1 — Layered Clean Client Architecture
-- **Binds:** All presentation and logic modules.
-- **Prevents:** Business logic and AI prompt assembly polluting UI component trees or causing inconsistent state transitions.
-- **Rule:** UI components must never make raw API requests or mutate `localStorage` directly. All actions must dispatch through the `StudioController` service layer.
+### AD-1 — Polyglot Split: Python Heavy Lifting & Client Agility
+- **Rule:** Post generation heuristics, NLP syntactic decomposition, live tech feed scraping, and career leverage calculations belong to the **Python backend** (`backend/`). The frontend serves exclusively as a reactive, distraction-free creative workbench.
+- **Benefit:** Empowers Python developers to showcase and extend real multi-agent NLP logic while preserving sub-16ms UI responsiveness.
 
-### AD-2 — Deterministic Anti-AI Lexical & Rhythm Filter
-- **Binds:** `TextEngine`, prompt pipelines.
-- **Prevents:** Typical LLM cliché post output (*"delve", "testament to", "game-changer", "let's dive into"*) that triggers AI detection algorithms and reader fatigue.
-- **Rule:** 
-  1. The engine enforces an explicit negative vocabulary blocklist.
-  2. The prompt imposes a strict burstiness formula: alternating short punchy sentences (under 6 words) with reflective analytical sentences (15–20 words).
-  3. Every post begins with an authentic observation, contrarian spark, or practical question—never a generic introductory clause.
+### AD-2 — Resilient Multi-Provider Failover Chain
+- **Rule:** All post generation calls execute through a prioritized 3-stage fallback pipeline:
+  1. Primary: Python FastAPI backend (`/api/generate/deep`) with selected provider credentials.
+  2. Secondary: Direct browser-side provider dispatch (`aiProviderService`).
+  3. Tertiary: Local deterministic natural language synthesis (`antiAiEngine.ts`).
+- **Invariant:** Generation must NEVER throw uncaught promise rejections or lock the user out.
 
-### AD-3 — Two-Tier Dynamic Trending Tags Engine
-- **Binds:** `TrendEngine`, UI hashtag pills.
-- **Prevents:** Static, out-of-date, or irrelevant hashtags that fail to boost algorithmic reach on LinkedIn.
-- **Rule:**
-  1. **Tier 1 (Industry Radar):** Evaluates macro trending topic seeds matching the user's `Profession` and `Role`.
-  2. **Tier 2 (Semantic Context Match):** Generates 5–8 high-velocity tags matching the generated post's specific subject.
-  3. Each tag is annotated with a momentum tier (`🔥 Trending`, `📈 Rising`, `🎯 Core`).
-  4. Clicking any tag pill toggles its insertion directly into the post buffer with single-space formatting.
+### AD-3 — Dynamic Model Discovery (Anti-404 Invariant)
+- **Rule:** Never hardcode specific transient LLM model strings (e.g. `gemini-1.5-pro-002`). The application queries provider catalog endpoints (`GET /v1beta/models?key=...`) to determine currently provisioned models and automatically routes traffic to the optimal available tier (`gemini-1.5-flash`, `gemini-2.0-flash`).
 
-### AD-4 — Surrealist "Crazy" Conceptual Visual Engine
-- **Binds:** `ImageEngine`, Visual canvas.
-- **Prevents:** Boring corporate stock photos, generic boardroom handshakes, or predictable clipart.
-- **Rule:** Visual prompts must combine the user's core theme with surrealist editorial metaphors (e.g., *retro-futuristic 3D isometric apparatus, glowing fiber-optic bonsai trees, neon architectural landscapes*). Images are rendered with high visual contrast and exported via standard Data URI / Blob with an instant `📥 Download Image` trigger.
+### AD-4 — High-Stakes Career Disruption Intelligence
+- **Rule:** The Tech & Job Radar must never return generic news summaries or shallow bullet points. The `enrich_career_impact` pipeline in `backend/radar_engine.py` strictly maps technological advances to concrete developer leverage:
+  - Automatable tasks vs. high-compensation skills (\$200k–\$320k senior bands).
+  - Explicit action recommendations (Adopt, Deprecate, or Monitor).
+  - Bold typography hierarchy with prominent pull quotes.
 
-### AD-5 — Zero-Auth Offline-First Persistence
-- **Binds:** `StorageAdapter`.
-- **Prevents:** User bounce caused by forced signup walls or loss of daily settings between browser sessions.
-- **Rule:** `Profession`, `Role`, user preferences, and the `Drafts` ledger must persist in browser `localStorage`. No login is required for day-to-day operation.
+### AD-5 — Distraction-Free Visual Workbench
+- **Rule:** The Visual Workbench whiteboard canvas must remain completely clean on mount, free from pre-rendered example blueprints, shape clutter, or mock templates. The user retains 100% agency to design custom diagrams, shapes, and architecture visuals from scratch.
 
-### AD-6 — Inline Accordion Unfolding UX Geometry
-- **Binds:** `CardOutput`, layout container.
-- **Prevents:** Layout jumping, modals obscuring context, or awkward side-panel displacement.
-- **Rule:** The generated result must unfold smoothly directly underneath Card 01 using CSS spring transition/Framer Motion. The 3-column desktop layout (Left: 260px, Center: flexible 680–760px, Right: 300px) remains structurally anchored.
-
-### AD-7 — Native Clean Clipboard Formatting
-- **Binds:** `ClipboardAdapter`.
-- **Prevents:** Messy double-encoded markdown symbols or flattened single-line walls of text when pasting into LinkedIn.
-- **Rule:** The clipboard pipeline strips raw markdown artifacts while strictly preserving intentional double-newline paragraph spacing optimized for LinkedIn's mobile and desktop feeds.
-
----
-
-## Consistency Conventions
-
-| Concern | Convention |
-|---|---|
-| **Naming** | PascalCase for UI components (`StudioSidebar`, `ThoughtCard`, `UnfoldingResultCard`); camelCase for hooks and engines (`useStudioState`, `generatePostCopy`, `fetchTrendingTags`). |
-| **Data & Envelopes** | Generated post shape: `{ id: string, copy: string, tags: TagItem[], imagePrompt: string, imageUrl: string, createdAt: number, tone: ToneMode }`. |
-| **Error Handling** | Graceful degradation: if image generation fails, post copy and trending tags remain fully accessible with an inline retry banner. |
-| **Styling & Theme** | Tailwind utility classes with custom semantic color variables (`bg-sage-50`, `bg-sage-900`, `border-sage-200`, `text-sage-950`). |
-
----
-
-## Stack (Verified Stable & Current)
-
-| Technology | Role | Selected Version / Standard |
-|---|---|---|
-| **React** | Core UI Library | 18.3+ |
-| **Vite** | Build Tool & Fast Dev Server | 5.4+ |
-| **TypeScript** | Type Safety | 5.4+ |
-| **TailwindCSS** | Styling & Design System | 3.4+ |
-| **Framer Motion** | Inline Accordion Animation | 11.0+ |
-| **Lucide React** | Clean Minimalist Iconography | 0.450+ |
-| **Google GenAI / Gemini**| LLM Text & Vision Engine | Gemini 2.5 / 3 Flash |
-
----
-
-## Structural Seed
-
-```text
-linkedin-post-studio/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── assets/               # Brand assets & placeholder visual seeds
-│   ├── components/
-│   │   ├── layout/
-│   │   │   ├── StudioHeader.tsx
-│   │   │   ├── LeftSidebar.tsx      # Profession & Role selector
-│   │   │   └── RightSidebar.tsx     # Quote reminder & status
-│   │   ├── studio/
-│   │   │   ├── ThoughtInputCard.tsx # Card 01: What's on your mind?
-│   │   │   ├── TonePillSelector.tsx # Quick tone toggle pills
-│   │   │   ├── UnfoldingCard.tsx    # Card 02: Inline animated reveal
-│   │   │   ├── TrendingTagsBar.tsx  # Interactive clickable trending pills
-│   │   │   ├── PostCopyEditor.tsx   # Human copy preview + edit
-│   │   │   └── CrazyVisualCard.tsx  # Surrealist AI image preview & download
-│   │   └── ui/                      # Reusable UI primitives (Button, Dropdown, Toast)
-│   ├── services/
-│   │   ├── antiAiEngine.ts          # Prompt synthesis & anti-AI filter
-│   │   ├── trendingTagsEngine.ts    # Two-tier real-time tag generator
-│   │   ├── crazyVisualEngine.ts     # Surrealist prompt builder & image gen
-│   │   └── storageAdapter.ts        # LocalStorage persistence manager
-│   ├── hooks/
-│   │   ├── useStudioState.ts        # Unified reactive studio state
-│   │   └── useSpeechToText.ts       # Voice dictation hook
-│   ├── types/
-│   │   └── studio.ts                # TypeScript domain models
-│   ├── App.tsx                      # Root 3-column studio layout
-│   └── main.tsx                     # React DOM entrypoint
-├── tailwind.config.js
-└── package.json
-```
-
----
-
-## Capability → Architecture Map
-
-| Capability / Requirement | Lives In | Governed By |
-|---|---|---|
-| Persistent Profession & Role | `components/layout/LeftSidebar.tsx` | AD-1, AD-5 |
-| Minimal Thought Input & Voice Mic | `components/studio/ThoughtInputCard.tsx` | AD-1, AD-6 |
-| Anti-AI Non-Detectable Copy | `services/antiAiEngine.ts` | AD-2 |
-| Dynamic Real-Time Trending Tags | `services/trendingTagsEngine.ts` | AD-3 |
-| "Crazy" Surrealist AI Visuals | `services/crazyVisualEngine.ts` | AD-4 |
-| Inline Unfolding Accordion UX | `components/studio/UnfoldingCard.tsx` | AD-6 |
-| 1-Click Clipboard & Drafts | `services/storageAdapter.ts` | AD-5, AD-7 |
-
----
-
-## Deferred
-
-1. **LinkedIn Direct OAuth & Auto-Publishing API:** Deferred until core generation & clipboard flow is verified by users. The UI shows `● NOT CONNECTED` as seen in the reference screenshot.
-2. **Multi-account Cloud Sync:** Deferred to future milestone. LocalStorage fulfills 100% of single-user daily posting needs.
-
+### AD-6 — Zero-Server Credential Storage
+- **Rule:** User API keys (Gemini, OpenAI, Anthropic, Groq) and personal identity settings reside strictly on the user's local device in browser `localStorage`. No credentials are ever relayed through third-party telemetry, trackers, or centralized proxy databases.
