@@ -22,6 +22,8 @@ build/
 .agents/
 .cline/
 .opencode/
+_bmad/
+_bmad-output/
 .vscode/*
 !.vscode/extensions.json
 .idea/
