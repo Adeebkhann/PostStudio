@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+.gitignore
+__pycache__
+*.py[cod]
+*$py.class
+.env
+.venv
+venv
+.agent
+_bmad
+_bmad-output

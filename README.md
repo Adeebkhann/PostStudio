@@ -143,6 +143,26 @@ When you first open PostStudio, you will see the **Multi-Provider Access Gateway
 
 ---
 
+## ☁️ Deploy to Render (100% Free 24/7 Hosting)
+
+PostStudio is pre-configured with a **`render.yaml` Blueprint** and multi-stage **`Dockerfile`**. You can deploy it live in 3 clicks:
+
+### Method 1: Automatic Blueprint (Easiest)
+1. Go to **[dashboard.render.com](https://dashboard.render.com/)** and log in with GitHub.
+2. Click **New +** (top right) ➔ Select **Blueprint**.
+3. Select your repository: **`Adeebkhann/PostStudio`**.
+4. Click **Apply**. Render automatically reads `render.yaml`, builds the Docker container, and deploys both frontend and backend on a free HTTPS URL!
+
+### Method 2: Manual Web Service
+1. Click **New +** ➔ Select **Web Service**.
+2. Connect your repository **`Adeebkhann/PostStudio`**.
+3. Render will auto-detect the **Docker** environment.
+4. Select the **Free** instance type ($0/mo) and click **Deploy Web Service**!
+
+Your app will be live 24/7 at: `https://poststudio-xxxx.onrender.com`
+
+---
+
 ## 🛠️ Troubleshooting
 
 ### 1. "Port 8000 or 3000 is already in use"

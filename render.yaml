@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: poststudio
+    env: docker
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /api/health
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8000
